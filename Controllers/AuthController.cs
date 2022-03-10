@@ -68,7 +68,9 @@ namespace WebApplication1.Controllers
                 con.Close();
             }
             string[] user = { username, mail, bio, gender };
-            ViewBag.user = user;
+            HttpContext.Session.SetString("CurrentUser", username);
+
+            ViewBag.user = HttpContext.Session.GetString("CurrentUser");
             return View("Index");
         }
         
