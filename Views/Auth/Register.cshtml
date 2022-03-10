@@ -1,0 +1,56 @@
+﻿@model WebApplication1.Models.UserModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Enter your informations down below to register</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Register" id="form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" type="email" required class="form-control" />
+                <span asp-validation-for="Email" class="text-danger">@ViewData["e"]</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" required class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" required type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <select required asp-for="Gender">
+                    <option value="M">M</option>
+                    <option value="F">F</option>
+                    <option value="NB">NB</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bio" class="control-label"></label>
+                <textarea asp-for="Bio" rows="4" cols="40" form="form" placeholder="Just a few words about you"></textarea>
+                <span asp-validation-for="Bio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
