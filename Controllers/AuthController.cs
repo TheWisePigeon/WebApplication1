@@ -71,7 +71,7 @@ namespace WebApplication1.Controllers
             HttpContext.Session.SetString("CurrentUser", username);
 
             ViewBag.user = HttpContext.Session.GetString("CurrentUser");
-            return View("Index");
+            return RedirectToAction("Home", "Content", new { user = HttpContext.Session.GetString("CurrentUser") });
         }
         
         public ActionResult Login()
@@ -96,10 +96,10 @@ namespace WebApplication1.Controllers
             {
                 if (reader.Read())
                 {
-                    
-                    var user = reader["name"];
+
                     con.Close();
-                    return RedirectToAction("Home", "Content", new { user = user });
+                    HttpContext.Session.SetString("CurrentUser", mail);
+                    return RedirectToAction("Home", "Content", new { user = HttpContext.Session.GetString("CurrentUser") });
                 }
                 else
                 {

@@ -16,7 +16,7 @@ namespace WebApplication1
             return  con;
         }
 
-        public static string getName(string email)
+        public static string getPosts(string email)
         {
 
             return "";
