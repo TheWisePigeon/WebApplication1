@@ -31,7 +31,7 @@ namespace WebApplication1
             {
                 while (reader.Read())
                 {
-                    Post post = new Post(reader["media"].ToString(), reader["description"].ToString(), email);
+                    Post post = new Post(reader["Id"].ToString(), reader["media"].ToString(), reader["description"].ToString(), email);
                     posts.Add(post);
 
                 }
@@ -55,7 +55,7 @@ namespace WebApplication1
             {
                 while (reader.Read())
                 {
-                    Post post = new Post(reader["media"].ToString(), reader["description"].ToString(), reader["poster"].ToString());
+                    Post post = new Post(reader["Id"].ToString(), reader["media"].ToString(), reader["description"].ToString(), reader["poster"].ToString());
                     posts.Add(post);
 
                 }
@@ -63,6 +63,30 @@ namespace WebApplication1
 
             }
             return posts;
+        }
+
+        public static void delete(string id)
+        {
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "delete from posts where Id=@id";
+            cmd.Parameters.Add("@id", MySqlDbType.VarChar).Value = id;
+            con.Open();
+            try
+            {
+                cmd.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+                
+            }
+            finally
+            {
+                con.Close();
+            }
+
         }
     }
 }

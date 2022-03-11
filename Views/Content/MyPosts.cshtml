@@ -39,8 +39,7 @@
                 <div>
                     <img src="@item.media.Replace("wwwroot/", "/")" width="500px" height="500px" />
                     <h3>@item.desc</h3>
-                    <a asp-action="Delete" asp-controller="Content">Delete</a>
-                    <a asp-action="Edit" asp-controller="Content">Edit</a>
+                    <a href="/Content/Delete/@item.id">Delete</a>
                 </div>
             }
 

@@ -79,5 +79,21 @@ namespace WebApplication1.Controllers
             }
             return View("MyPosts");
         }
+
+        public ActionResult Delete(string id)
+        {
+            
+            try
+            {
+                DB.delete(id);
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = e.Message;
+                return View();
+            }
+            ViewBag.users = DB.getPosts(HttpContext.Session.GetString("CurrentUser"));
+            return View("MyPosts");
+        }
     }
 }
