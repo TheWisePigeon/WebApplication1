@@ -120,5 +120,14 @@ namespace WebApplication1.Controllers
             
             return View("Friends");
         }
+
+        //send Friend request
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SendFriendRequest(string sender, string receiver)
+        {
+            string msg = "Hey "+ receiver + "! " + sender + " would like to become your friend :)";
+            return View();
+        }
     }
 }
