@@ -6,29 +6,9 @@
     var users = ViewBag.users as List<UserModel>;
 }
 
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
-            
-            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="MyPosts">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="Friends">Posts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="User">Mesages</a>
-                    </li>
 
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
-
-<h1>Users list</h1>
+<h1 id="users">Users list</h1>
+<h3><a href="#posts">Posts list</a></h3>
 <div>
     @{ if (users != null)
         {
@@ -39,13 +19,14 @@
                 <p>Username:@user.Username</p>
                 <p>Gender:@user.Gender</p>
                 <p>Bio:@user.Bio</p>
-                <a href="/Admin/DeleteAccount?user=@user.Email">Delete Account</a>  <a href="/Admin/ResetAccount?user=@user.Email">Reset Account</a>
+                <a href="/Admin/DeleteAccount?user=@user.Email">Delete Account</a> <a href="/Admin/ResetAccount?user=@user.Email">Reset Account</a>
             }
 
         }
     }
 </div>
-<h1>Every post</h1>
+<h1 id="posts">Posts list</h1>
+<h3><a href="#users">Users list</a></h3>
 @{
     if (posts != null)
     {
