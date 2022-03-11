@@ -194,6 +194,16 @@ namespace WebApplication1.Controllers
             return View("Messages");
         }
 
+        //remove friend
+        public ActionResult RemoveFriend(string user)
+        {
+            string current = HttpContext.Session.GetString("CurrentUser");
+            string[] test = DB.RemoveFriend(user, current);
+            //ViewBag.friends = DB.getFriends(HttpContext.Session.GetString("CurrentUser"));
+            //ViewBag.currentUser = HttpContext.Session.GetString("CurrentUser");
+            ViewBag.error = test;
+            return View("Error");
+        }
         //ok request
         public ActionResult Ok(IFormCollection c)
         {

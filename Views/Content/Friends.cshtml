@@ -75,14 +75,19 @@
         {
             foreach (string item in friends)
             {
-        <div>
-            <h5>@item </h5>
-            <form asp-action="RemoveFriend">
-                <input type="hidden" name="mail" />
-                <input type="submit" class="btn btn-danger text-white" value="Remove" />
-            </form>
-        </div>
-                
+                if (item != "")
+                {
+
+                    <div>
+                        <h5>@item </h5>
+                        <form asp-action="RemoveFriend">
+                            <input type="hidden" name="mail" />
+                            <input type="submit" class="btn btn-danger text-white" value="Remove" />
+                        </form>
+                    </div>
+                }
+
+
             }
         }
 

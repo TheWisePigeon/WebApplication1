@@ -153,6 +153,36 @@ namespace WebApplication1
             
         }
 
+        public static string getFriendString(string user)
+        {
+            string friends = "";
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "select friends from users where email=@user";
+            cmd.Parameters.Add("@user", MySqlDbType.VarChar).Value = user;
+            con.Open();
+            string friend;
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+
+                    friend = reader[0].ToString();
+                    
+                    return friends;
+                }
+                else
+                {
+                    return friends;
+                }
+
+
+            }
+
+        }
+
 
         public static List<Messages> getMessages(string user)
         {
@@ -208,8 +238,11 @@ namespace WebApplication1
         {
             MySqlConnection con = DB.Con();
             MySqlCommand cmd = new MySqlCommand();
+            MySqlCommand cmd1 = new MySqlCommand();
             cmd.Connection = con;
             cmd.CommandType = System.Data.CommandType.Text;
+            cmd1.Connection = con;
+            cmd1.CommandType = System.Data.CommandType.Text;
             string q =String.Format("update users set friends= CONCAT(friends, ';{0}') where email=@currentUser", sender);
             cmd.CommandText = q;
             cmd.Parameters.Add("@currentUser", MySqlDbType.VarChar).Value = CurrentUser;
@@ -229,9 +262,22 @@ namespace WebApplication1
             {
                 con.Close();
             }
-            
-            
-            
+            string q2= String.Format("update users set friends= CONCAT(friends, ';{0}') where email=@currentUser", CurrentUser);
+            cmd1.CommandText = q2;
+            cmd1.Parameters.Add("@currentUser", MySqlDbType.VarChar).Value = sender;
+            con.Open();
+            try
+            {
+                cmd1.ExecuteScalar();
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                con.Close();
+            }
 
         }
 
@@ -349,6 +395,20 @@ namespace WebApplication1
             {
                 con.Close();
             }
+        }
+
+
+        public static string[] RemoveFriend(string user, string current)
+        {
+            MySqlConnection con = DB.Con();
+
+            MySqlCommand cmd = new MySqlCommand();
+            string friends = DB.getFriendString(user);
+            string friendss = DB.getFriendString(current);
+            string u = "";
+            string newfriend = friends.Replace(current, u);
+            string[] test = { friends, friendss, newfriend };
+            return test;
         }
 
 
