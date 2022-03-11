@@ -14,7 +14,7 @@ namespace WebApplication1.Models
         public int Id { get; set; }
         [Required]
         [DataType(DataType.Upload)]
-        public FormFile Media { get; set; }
+        public IFormFile Media { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]

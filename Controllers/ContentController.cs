@@ -25,6 +25,11 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        public ActionResult NewPost()
+        {
+            return View();
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -34,12 +39,39 @@ namespace WebApplication1.Controllers
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = con;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "insert into pubs(media, description, poster) values(@media, @desc, @poster)";
+            cmd.CommandText = "insert into posts(media, description, poster) values(@media, @desc, @poster)";
             try
             {
                 string desc = post.Description;
                 Guid guid = Guid.NewGuid();
-            }catch
+                string ext = Path.GetExtension(post.Media.FileName);
+                string filename = post.Media.FileName;
+                string uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\posts", filename);
+                string media = uploadPath;
+                var stream = new FileStream(uploadPath, FileMode.Create);
+                //insert
+                cmd.Parameters.Add("@poster", MySqlDbType.VarChar).Value = HttpContext.Session.GetString("CurrentUser");
+                cmd.Parameters.Add("@desc", MySqlDbType.VarChar).Value = desc;
+                cmd.Parameters.Add("@media", MySqlDbType.VarChar).Value = media;
+                con.Open();
+                try
+                {
+                    cmd.ExecuteScalar();
+                }
+                catch(Exception e)
+                {
+                    ViewBag.error = e.Message;
+                    return View();
+                }
+                finally
+                {
+                    con.Close();
+                }
+                post.Media.CopyToAsync(stream);
+                ViewBag.message = media + "Success";
+                return View("MyPosts");
+            }
+            catch
             {
 
             }
