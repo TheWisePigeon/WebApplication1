@@ -12,6 +12,8 @@ namespace WebApplication1.Controllers
 {
     public class ContentController : Controller
     {
+
+        //app home
         public ActionResult Home(string user)
         {
             ViewBag.user = user;
@@ -20,6 +22,7 @@ namespace WebApplication1.Controllers
         }
 
 
+        //user's posts
         public ActionResult MyPosts()
         {
             ViewBag.users = DB.getPosts(HttpContext.Session.GetString("CurrentUser"));
@@ -27,12 +30,14 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        //new post page view
         public ActionResult NewPost()
         {
             return View();
         }
 
 
+        //make a new post
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult NewPost( PostModel post )
@@ -80,6 +85,7 @@ namespace WebApplication1.Controllers
             return View("MyPosts");
         }
 
+        //delete a post
         public ActionResult Delete(string id)
         {
             
@@ -94,6 +100,25 @@ namespace WebApplication1.Controllers
             }
             ViewBag.users = DB.getPosts(HttpContext.Session.GetString("CurrentUser"));
             return View("MyPosts");
+        }
+
+        //friends stuff
+        public ActionResult Friends()
+        {
+            ViewBag.currentUser = HttpContext.Session.GetString("CurrentUser");
+            return View();
+        }
+
+        //search for a user
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SearchUser(IFormCollection c)
+        {
+            string user = c["user"].ToString();
+            ViewBag.exist = DB.getUser(user);
+            ViewBag.user = user;
+            
+            return View("Friends");
         }
     }
 }

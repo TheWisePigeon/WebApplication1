@@ -34,7 +34,7 @@ namespace WebApplication1.Controllers
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = con;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "insert into users(email, name, password, gender, bio, msgs, friends, pubs) values(@mail, @name, @pwd, @gender, @bio, @msgs, @friends, @pubs)";
+            cmd.CommandText = "insert into users(email, name, password, gender, bio, msgs, friends) values(@mail, @name, @pwd, @gender, @bio, @msgs, @friends)";
             cmd.Parameters.Add("@mail", MySqlDbType.VarChar).Value = mail;
             cmd.Parameters.Add("@name", MySqlDbType.VarChar).Value = username;
             cmd.Parameters.Add("@pwd", MySqlDbType.VarChar).Value = password;
@@ -42,7 +42,6 @@ namespace WebApplication1.Controllers
             cmd.Parameters.Add("@bio", MySqlDbType.VarChar).Value = bio;
             cmd.Parameters.Add("@msgs", MySqlDbType.VarChar).Value = "";
             cmd.Parameters.Add("@friends", MySqlDbType.VarChar).Value = "";
-            cmd.Parameters.Add("@pubs", MySqlDbType.VarChar).Value = "";
             try
             {
                 con.Open();

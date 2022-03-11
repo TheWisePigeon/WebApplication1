@@ -88,5 +88,34 @@ namespace WebApplication1
             }
 
         }
+
+        public static Boolean getUser(string mail)
+        {
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            string foundUser;
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "select * from users where email=@mail";
+            cmd.Parameters.Add("@mail", MySqlDbType.VarChar).Value = mail;
+            con.Open();
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    foundUser = reader["email"].ToString();
+                    con.Close();
+                    return true;
+                }
+                else
+                {
+                    con.Close();
+                    return false;
+                }
+
+
+            }
+            
+        }
     }
 }

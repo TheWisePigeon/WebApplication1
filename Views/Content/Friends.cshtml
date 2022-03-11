@@ -1,12 +1,16 @@
-﻿
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
 @{
-    <h1>Welcome @ViewBag.user</h1>
-    var users = ViewBag.users;
+    
+    var exist = ViewBag.exist;
+    var user = ViewBag.user;
 }
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><strong>Home</strong></a>
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -17,7 +21,7 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="MyPosts">My Posts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="Friends">Friends</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="Friends"><strong>Friends</strong></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="User">Profile</a>
@@ -32,31 +36,29 @@
     </nav>
 </header>
 <main>
-    <button class="btn btn-primary"><a asp-action="NewPost" asp-controller="Content" style="color:white">New Post</a></button>
-    <div>
-        @{
-            if (users != null)
-            {
-                foreach (var item in users)
-                {
-                <div>
-                    <img src="@item.media.Replace("wwwroot/", "/")" width="500px" height="500px" />
-                    <h3>@item.desc</h3>
-                    @{
-                        if (@item.poster == @ViewBag.user)
-                        {<h4>Posted by You</h4>}
-                        else
-                        {<h4>Posted by @item.poster</h4>}
-                    }
-
-                </div>
-                }
-
-            }
+    <form asp-action="SearchUser">
+        <div class="text-danger"></div>
+        <div class="form-group">
+            <label for="user" class="control-label">Search for a user</label>
+            <input type="text" name="user" required placeholder="Enter the user you are looking for's mail adress" class="form-control" />
+            <span class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="SearchUser" class="btn btn-primary" />
+        </div>
+    </form>
+    @{ if (exist != null)
+        {
+            if (!exist)
+            {<span class="text-danger">No user was found for this mail adress</span> }
             else
             {
-                <h1>bruh, you don't have any posts yet</h1>
+                <div>
+                    <h4>Found[@ViewBag.user]</h4>
+                    <button class="btn btn-primary"><a asp-action="SendFriendRequest" asp-controller="Content" style="color:white">Send friend request</a></button>
+                </div>
             }
         }
-    </div>
+    }
+
 </main>
