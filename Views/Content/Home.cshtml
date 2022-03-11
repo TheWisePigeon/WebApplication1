@@ -1,6 +1,7 @@
 ﻿
 @{
     <h1>Welcome @ViewBag.user</h1>
+    var users = ViewBag.users;
 }
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -28,5 +29,30 @@
     </nav>
 </header>
 <main>
-   
+    <div>
+        @{
+            if (users != null)
+            {
+                foreach (var item in users)
+                {
+                <div>
+                    <img src="@item.media.Replace("wwwroot/", "/")" width="500px" height="500px" />
+                    <h3>@item.desc</h3>
+                    @{
+                        if (@item.poster == @ViewBag.user)
+                        {<h4>Posted by You</h4>}
+                        else
+                        {<h4>Posted by @item.poster</h4>}
+                    }
+
+                </div>
+                }
+
+            }
+            else
+            {
+                <h1>bruh, you don't have any posts yet</h1>
+            }
+        }
+    </div>
 </main>

@@ -15,6 +15,7 @@ namespace WebApplication1.Controllers
         public ActionResult Home(string user)
         {
             ViewBag.user = user;
+            ViewBag.users = DB.getAllPosts();
             return View();
         }
 
@@ -69,14 +70,14 @@ namespace WebApplication1.Controllers
                     con.Close();
                 }
                 post.Media.CopyToAsync(stream);
-                ViewBag.message = media + "Success";
+                ViewBag.users = DB.getPosts(HttpContext.Session.GetString("CurrentUser"));
                 return View("MyPosts");
             }
             catch
             {
 
             }
-            return View();
+            return View("MyPosts");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace WebApplication1
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = con;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "select * from posts where poster=@mail";
+            cmd.CommandText = "select * from posts where poster=@mail order by Id desc";
             cmd.Parameters.Add("@mail", MySqlDbType.VarChar).Value = email;
             con.Open();
             using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -32,6 +32,30 @@ namespace WebApplication1
                 while (reader.Read())
                 {
                     Post post = new Post(reader["media"].ToString(), reader["description"].ToString(), email);
+                    posts.Add(post);
+
+                }
+
+
+            }
+            return posts;
+        }
+
+        public static List<Post> getAllPosts()
+        {
+            List<Post> posts = new List<Post>();
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "select * from posts order by Id desc";
+            
+            con.Open();
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Post post = new Post(reader["media"].ToString(), reader["description"].ToString(), reader["poster"].ToString());
                     posts.Add(post);
 
                 }
