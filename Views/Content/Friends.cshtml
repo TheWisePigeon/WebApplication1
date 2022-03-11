@@ -6,7 +6,7 @@
     
     var exist = ViewBag.exist;
     var user = ViewBag.user;
-    var friends = ViewBag.users as List<Friend>;
+    var friends = ViewBag.friends as List<string>;
 }
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -64,12 +64,29 @@
                 </div>
             }
         }
-    }
 
-    <div>
-        @{ 
-            
+
+}
+
+<div>
+
+    @{
+        if (friends != null)
+        {
+            foreach (string item in friends)
+            {
+        <div>
+            <h5>@item </h5>
+            <form asp-action="RemoveFriend">
+                <input type="hidden" name="mail" />
+                <input type="submit" class="btn btn-danger text-white" value="Remove" />
+            </form>
+        </div>
+                
+            }
         }
-    </div>
+
+    }
+</div>
 
 </main>

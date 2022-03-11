@@ -119,28 +119,38 @@ namespace WebApplication1
             
         }
 
-        public static List<Friend> friends(string user)
+        public static List<string> getFriends(string user)
         {
-            List<Friend> friends = new List<Friend>();
+            List<string> friends = new List<string>();
             MySqlConnection con = DB.Con();
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = con;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "select * from msgs where receiver=@receiver order by Id desc";
-            cmd.Parameters.Add("@receiver", MySqlDbType.VarChar).Value = user;
+            cmd.CommandText = "select friends from users where email=@user";
+            cmd.Parameters.Add("@user", MySqlDbType.VarChar).Value = user;
             con.Open();
+            string friend ;
             using (MySqlDataReader reader = cmd.ExecuteReader())
             {
-                while (reader.Read())
+                if (reader.Read())
                 {
-                    Messages friend = new Friend();
-                    friends.Add(friend);
 
+                    friend = reader[0].ToString();
+                    string[] b = friend.Split(';');
+                    foreach(string f in b)
+                    {
+                        friends.Add(f);
+                    }
+                    return friends;
+                }
+                else
+                {
+                    return friends;
                 }
 
 
             }
-            return friends;
+            
         }
 
 
@@ -200,7 +210,7 @@ namespace WebApplication1
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = con;
             cmd.CommandType = System.Data.CommandType.Text;
-            string q =String.Format("update users set friends= CONCAT(friends, '{0}') where email=@currentUser", sender);
+            string q =String.Format("update users set friends= CONCAT(friends, ';{0}') where email=@currentUser", sender);
             cmd.CommandText = q;
             cmd.Parameters.Add("@currentUser", MySqlDbType.VarChar).Value = CurrentUser;
             con.Open();

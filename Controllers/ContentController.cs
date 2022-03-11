@@ -105,6 +105,7 @@ namespace WebApplication1.Controllers
         //friends stuff
         public ActionResult Friends()
         {
+            ViewBag.friends = DB.getFriends(HttpContext.Session.GetString("CurrentUser"));
             ViewBag.currentUser = HttpContext.Session.GetString("CurrentUser");
             return View();
         }
