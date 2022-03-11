@@ -21,6 +21,7 @@ namespace WebApplication1.Controllers
 
         public ActionResult MyPosts()
         {
+            ViewBag.users = DB.getPosts(HttpContext.Session.GetString("CurrentUser"));
 
             return View();
         }
@@ -46,7 +47,7 @@ namespace WebApplication1.Controllers
                 Guid guid = Guid.NewGuid();
                 string ext = Path.GetExtension(post.Media.FileName);
                 string filename = post.Media.FileName;
-                string uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\posts", filename);
+                string uploadPath = "wwwroot/Posts/"+filename;
                 string media = uploadPath;
                 var stream = new FileStream(uploadPath, FileMode.Create);
                 //insert

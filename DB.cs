@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApplication1
 {
@@ -16,10 +17,28 @@ namespace WebApplication1
             return  con;
         }
 
-        public static string getPosts(string email)
+        public static List<Post> getPosts(string email)
         {
+            List<Post> posts = new List<Post>();
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "select * from posts where poster=@mail";
+            cmd.Parameters.Add("@mail", MySqlDbType.VarChar).Value = email;
+            con.Open();
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Post post = new Post(reader["media"].ToString(), reader["description"].ToString(), email);
+                    posts.Add(post);
 
-            return "";
+                }
+
+
+            }
+            return posts;
         }
     }
 }
