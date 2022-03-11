@@ -1,0 +1,45 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var posts = ViewBag.posts;
+    var users = ViewBag.users as List<UserModel>;
+}
+
+<h1>Users list</h1>
+<div>
+    @{ if (users != null)
+        {
+            foreach (var user in users)
+            {
+        <p>---------------------</p>
+                <p>Mail:@user.Email</p>
+                <p>Username:@user.Username</p>
+                <p>Gender:@user.Gender</p>
+                <p>Bio:@user.Bio</p>
+
+            }
+
+        }
+    }
+</div>
+<h1>Every post</h1>
+@{
+    if (posts != null)
+    {
+        foreach (var item in posts)
+        {
+            <div>
+                <img src="@item.media.Replace("wwwroot/", "/")" width="500px" height="500px" />
+                <h3>@item.desc</h3>
+                @{
+                    
+                    <h4>Posted by @item.poster</h4>
+                    <a href="/Mod/Warn?user=@item.poster" >Warn</a>
+                }
+
+            </div>
+        }
+
+    }
+}

@@ -279,8 +279,78 @@ namespace WebApplication1
             }
         }
 
+        public static List<UserModel> getUsers()
+        {
+            List<UserModel> users = new List<UserModel>();
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "select * from users ";
 
-        
+            con.Open();
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    UserModel user = new UserModel(
+                        reader["email"].ToString(), reader["name"].ToString(), "", reader["gender"].ToString(), reader["bio"].ToString()
+                        ) ;
+                    users.Add(user);
+
+                }
+
+
+            }
+            return users;
+        }
+
+        public static void DeleteAccount(string user)
+        {
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "delete from users where email=@mail";
+            cmd.Parameters.Add("@mail", MySqlDbType.VarChar).Value = user;
+            con.Open();
+            try
+            {
+                cmd.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public static void ResetAccount(string user)
+        {
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "delete from posts where poster=@mail";
+            cmd.Parameters.Add("@mail", MySqlDbType.VarChar).Value = user;
+            con.Open();
+            try
+            {
+                cmd.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
 
     }
 }
