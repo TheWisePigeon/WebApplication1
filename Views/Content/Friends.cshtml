@@ -6,6 +6,7 @@
     
     var exist = ViewBag.exist;
     var user = ViewBag.user;
+    var friends = ViewBag.users as List<Friend>;
 }
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -55,10 +56,20 @@
             {
                 <div>
                     <h4>Found[@ViewBag.user]</h4>
-                    <button class="btn btn-primary"><a asp-action="SendFriendRequest" asp-controller="Content" style="color:white">Send friend request</a></button>
+                    <form asp-action="SendFriendRequest">
+                        <input type="hidden" name="receiver" value="@ViewBag.user"/>
+                        <input type="submit" class="btn btn-primary" value="Send Friend Request" />
+                    </form>
+                    
                 </div>
             }
         }
     }
+
+    <div>
+        @{ 
+
+        }
+    </div>
 
 </main>

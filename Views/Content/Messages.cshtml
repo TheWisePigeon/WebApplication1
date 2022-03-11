@@ -2,12 +2,12 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    var users = ViewBag.users;
+    var messages = ViewBag.msgs as List<Messages>;
 }
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Content" asp-action="Home">Home</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -15,7 +15,7 @@
             <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="MyPosts"><strong>My Posts</strong></a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="MyPosts">My Posts</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="Friends">Friends</a>
@@ -24,31 +24,35 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="User">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="Messages">Messages</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Content" asp-action="Messages"><strong>Messages</strong></a>
                     </li>
+
                 </ul>
             </div>
         </div>
     </nav>
 </header>
-<button class="btn btn-primary" > <a asp-action="NewPost" asp-controller="Content" style="color:white" >New Post</a> </button>
-<div>
-    @{
-        if ( users!= null)
-        {
-            foreach (var item in users)
+<main>
+    @{           if (messages != null)
             {
-                <div>
-                    <img src="@item.media.Replace("wwwroot/", "/")" width="500px" height="500px" />
-                    <h3>@item.desc</h3>
-                    <a href="/Content/Delete/@item.id">Delete</a>
-                </div>
-            }
+                foreach (var item in messages)
+                {
+                    if (item.type=="FriendRequest")
+                    {
+                        <h4>Friend request from @item.sender, at @item.time</h4>
 
-        }
-        else
-        {
-            <h1>bruh, you don't have any posts yet</h1>
-        }
+                        <button class="btn btn-primary"><a href="/Content/Accept/@item.type">Accept</a></button>
+                        
+                        <button class="btn btn-danger"><a href="/Content/Deny/@item.type">Deny</a></button>
+                        
+
+                    }
+                    else
+                    {
+                        <h4>@item.content</h4>
+                    }
+
+                }
+            }
     }
-</div>
+</main>

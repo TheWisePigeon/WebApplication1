@@ -121,12 +121,67 @@ namespace WebApplication1.Controllers
             return View("Friends");
         }
 
+        public ActionResult SendFriendRequest()
+        {
+             
+            return View();
+        }
+
         //send Friend request
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SendFriendRequest(string sender, string receiver)
+        public ActionResult SendFriendRequest(IFormCollection c)
         {
+            string receiver = c["receiver"];
+            string sender = HttpContext.Session.GetString("CurrentUser");
             string msg = "Hey "+ receiver + "! " + sender + " would like to become your friend :)";
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text; 
+            cmd.CommandText = "insert into msgs(sender, receiver, time, content, type) values(@sender, @receiver, @time, @content, @type)";
+            cmd.Parameters.Add("@sender", MySqlDbType.VarChar).Value = sender;
+            cmd.Parameters.Add("@receiver", MySqlDbType.VarChar).Value = receiver;
+            cmd.Parameters.Add("@time", MySqlDbType.DateTime).Value = DateTime.Now;
+            cmd.Parameters.Add("@content", MySqlDbType.VarChar).Value = msg;
+            cmd.Parameters.Add("@type", MySqlDbType.VarChar).Value = "FriendRequest";
+            con.Open();
+            try
+            {
+                cmd.ExecuteScalar();
+            }
+            catch(Exception e)
+            {
+                ViewBag.error = e.Message;
+                return View();
+
+            }
+            finally
+            {
+                con.Close();
+            }
+
+            ViewBag.currentUser = HttpContext.Session.GetString("CurrentUser");
+            return View("Friends");
+        }
+
+        //accept request
+        public ActionResult Accept()
+        {
+
+            return View();
+        }
+
+        //deny request
+        public ActionResult Deny()
+        {
+            return View();
+        }
+
+        //messages stuff
+        public ActionResult Messages()
+        {
+            ViewBag.msgs = DB.getMessages(HttpContext.Session.GetString("CurrentUser"));
             return View();
         }
     }
