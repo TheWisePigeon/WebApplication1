@@ -134,21 +134,10 @@ namespace WebApplication1.Controllers
         {
             string receiver = c["receiver"];
             string sender = HttpContext.Session.GetString("CurrentUser");
-            string msg = "Hey "+ receiver + "! " + sender + " would like to become your friend :)";
-            MySqlConnection con = DB.Con();
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.Connection = con;
-            cmd.CommandType = System.Data.CommandType.Text; 
-            cmd.CommandText = "insert into msgs(sender, receiver, time, content, type) values(@sender, @receiver, @time, @content, @type)";
-            cmd.Parameters.Add("@sender", MySqlDbType.VarChar).Value = sender;
-            cmd.Parameters.Add("@receiver", MySqlDbType.VarChar).Value = receiver;
-            cmd.Parameters.Add("@time", MySqlDbType.DateTime).Value = DateTime.Now;
-            cmd.Parameters.Add("@content", MySqlDbType.VarChar).Value = msg;
-            cmd.Parameters.Add("@type", MySqlDbType.VarChar).Value = "FriendRequest";
-            con.Open();
+            string content = sender + " would like to be your friend uWu";
             try
             {
-                cmd.ExecuteScalar();
+                DB.sendMessage(sender, receiver, content, "FriendRequest");
             }
             catch(Exception e)
             {
@@ -156,26 +145,70 @@ namespace WebApplication1.Controllers
                 return View();
 
             }
-            finally
-            {
-                con.Close();
-            }
 
             ViewBag.currentUser = HttpContext.Session.GetString("CurrentUser");
             return View("Friends");
         }
 
         //accept request
-        public ActionResult Accept()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Accept(IFormCollection c)
         {
-
-            return View();
+            string sender = c["sender"];
+            string Id = c["Id"];
+            string currentUser = HttpContext.Session.GetString("CurrentUser");
+            try
+            {
+                DB.Accept(sender, currentUser, Id);
+            }
+            catch(Exception e)
+            {
+                ViewBag.error = e.Message;
+                return View("Error");
+            }
+            ViewBag.msgs = DB.getMessages(HttpContext.Session.GetString("CurrentUser"));
+            return View("Messages");
         }
 
         //deny request
-        public ActionResult Deny()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Deny(IFormCollection c)
         {
-            return View();
+
+            string sender = c["sender"];
+            string Id = c["Id"];
+            string currentUser = HttpContext.Session.GetString("CurrentUser");
+            try
+            {
+                DB.Deny(sender, currentUser, Id);
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = e.Message;
+                return View("Error");
+            }
+            ViewBag.msgs = DB.getMessages(HttpContext.Session.GetString("CurrentUser"));
+            return View("Messages");
+        }
+
+        //ok request
+        public ActionResult Ok(IFormCollection c)
+        {
+            string id = c["Id"];
+            try
+            {
+                DB.DeleteMsg(id);
+            }
+            catch(Exception e)
+            {
+                ViewBag.error = e.Message;
+                return View();
+            }
+
+            ViewBag.msgs = DB.getMessages(HttpContext.Session.GetString("CurrentUser"));
+            return View("Messages");
         }
 
         //messages stuff

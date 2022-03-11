@@ -122,7 +122,24 @@ namespace WebApplication1
         public static List<Friend> friends(string user)
         {
             List<Friend> friends = new List<Friend>();
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "select * from msgs where receiver=@receiver order by Id desc";
+            cmd.Parameters.Add("@receiver", MySqlDbType.VarChar).Value = user;
+            con.Open();
+            using (MySqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Messages friend = new Friend();
+                    friends.Add(friend);
 
+                }
+
+
+            }
             return friends;
         }
 
@@ -141,7 +158,7 @@ namespace WebApplication1
             {
                 while (reader.Read())
                 {
-                    Messages msg = new Messages(reader["sender"].ToString(), reader["time"].ToString(), reader["content"].ToString(), reader["type"].ToString() );
+                    Messages msg = new Messages(reader["Id"].ToString(), reader["sender"].ToString(), reader["time"].ToString(), reader["content"].ToString(), reader["type"].ToString() );
                     msgs.Add(msg);
 
                 }
@@ -152,10 +169,108 @@ namespace WebApplication1
         }
 
 
-        public static void Accept(string user)
+
+        public static void DeleteMsg(string Id)
         {
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "delete from msgs where Id=@Id";
+            cmd.Parameters.Add("@Id", MySqlDbType.VarChar).Value = Id;
+            con.Open();
+            try
+            {
+                cmd.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+
+        public static void Accept(string sender, string CurrentUser, string Id)
+        {
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            string q =String.Format("update users set friends= CONCAT(friends, '{0}') where email=@currentUser", sender);
+            cmd.CommandText = q;
+            cmd.Parameters.Add("@currentUser", MySqlDbType.VarChar).Value = CurrentUser;
+            con.Open();
+            string content = sender + ", " + CurrentUser + " is now your friend :)";
+            try
+            {
+                cmd.ExecuteScalar();
+                DB.DeleteMsg(Id);
+                DB.sendMessage(CurrentUser, sender, content, "FriendRequestApproval");
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                con.Close();
+            }
+            
+            
+            
 
         }
+
+
+        public static void sendMessage(string sender, string receiver, string content, string type)
+        {
+            MySqlConnection con = DB.Con();
+            MySqlCommand cmd = new MySqlCommand();
+            string msg = receiver + ", unfortunately " + sender + " denied your request ;)";
+            cmd.Connection = con;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "insert into msgs(sender, receiver, time, content, type) values(@sender, @receiver, @time, @content, @type)";
+            cmd.Parameters.Add("@sender", MySqlDbType.VarChar).Value = sender;
+            cmd.Parameters.Add("@receiver", MySqlDbType.VarChar).Value = receiver;
+            cmd.Parameters.Add("@time", MySqlDbType.DateTime).Value = DateTime.Now;
+            cmd.Parameters.Add("@content", MySqlDbType.VarChar).Value = content;
+            cmd.Parameters.Add("@type", MySqlDbType.VarChar).Value = type;
+            con.Open();
+            try
+            {
+                cmd.ExecuteScalar();
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public static void Deny(string receiver, string sender, string Id)
+        {
+            string content = receiver + " unfortunately, " + sender + " denied your friend request ;)";
+            
+            try
+            {
+                DB.sendMessage(sender, receiver, content, "FriendRequestDenial");
+                DB.DeleteMsg(Id);
+            }
+            catch
+            {
+
+            }
+        }
+
+
+        
 
     }
 }
